@@ -1,7 +1,6 @@
 package ies.sequeros.dam.pmdm.gestionperifl.domain.repositories
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.entities.User
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.entities.UserJPA
 import java.util.UUID
 
 interface IUserRepository {

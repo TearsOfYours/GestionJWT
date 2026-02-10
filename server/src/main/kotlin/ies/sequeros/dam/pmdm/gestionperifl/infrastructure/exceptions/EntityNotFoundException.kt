@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions
 
 
 class EntityNotFoundException(

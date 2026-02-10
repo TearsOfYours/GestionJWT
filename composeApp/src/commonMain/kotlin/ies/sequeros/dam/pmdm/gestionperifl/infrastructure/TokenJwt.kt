@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure
 
 import kotlinx.serialization.json.*
 import kotlin.io.encoding.Base64

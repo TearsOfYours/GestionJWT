@@ -1,10 +1,10 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor.createHttpClient
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor.createHttpClient
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
-import ies.sequeros.dam.pmdm.gestionperifl.ui.login.LoginFormViewModel
-import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginFormViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

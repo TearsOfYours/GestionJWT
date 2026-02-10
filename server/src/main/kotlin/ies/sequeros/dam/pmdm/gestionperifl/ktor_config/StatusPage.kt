@@ -4,16 +4,15 @@ import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.AlreadyExistsE
 import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.BusinessException
 import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.InvalidCredentialsException
 import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.NotFoundException
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.ConstraintViolationException
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.DatabaseOperationException
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.EntityNotFoundException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.ConstraintViolationException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.DatabaseOperationException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.EntityNotFoundException
 import ies.sequeros.dam.pmdm.gestionperifl.ktor_config.plugins.ErrorResponse
 import ies.sequeros.dam.pmdm.gestionperifl.ktor_config.plugins.ValidationErrorDetail
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.application.log
 import io.ktor.server.plugins.requestvalidation.RequestValidationException
 
 
@@ -21,8 +20,6 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.SerializationException
-import org.hibernate.exception.JDBCConnectionException
-import org.postgresql.util.PSQLException
 import java.net.ConnectException
 
 fun Application.configureStatusPages() {

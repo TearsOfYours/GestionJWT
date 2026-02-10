@@ -1,10 +1,10 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.repositories
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.entities.User
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IUserRepository
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.entities.UserJPA
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.EntityNotFoundException
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.mappers.UserMapper
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.entities.UserJPA
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.EntityNotFoundException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.mappers.UserMapper
 import jakarta.persistence.EntityManagerFactory
 import java.util.*
 

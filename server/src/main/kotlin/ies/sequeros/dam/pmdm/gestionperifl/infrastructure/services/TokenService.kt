@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.services
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.services
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

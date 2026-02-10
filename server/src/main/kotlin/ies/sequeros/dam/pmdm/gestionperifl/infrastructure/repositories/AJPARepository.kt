@@ -1,10 +1,10 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.repositories
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.AlreadyExistsException
 
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.DatabaseOperationException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.DatabaseOperationException
 import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
 import org.hibernate.exception.ConstraintViolationException

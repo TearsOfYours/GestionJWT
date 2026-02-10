@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.services
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.services
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.services.IPasswordEncoder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder

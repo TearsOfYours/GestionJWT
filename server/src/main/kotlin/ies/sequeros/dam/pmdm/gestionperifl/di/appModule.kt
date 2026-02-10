@@ -11,10 +11,10 @@ import ies.sequeros.dam.pmdm.gestionperifl.application.user.updateimage.UpdateIm
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IFilesRepository
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.domain.services.IPasswordEncoder
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.DatabaseOperationException
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories.FilesRepository
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories.UserJPARepository
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.services.BCryptEncoderAdapter
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.exceptions.DatabaseOperationException
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.repositories.FilesRepository
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.repositories.UserJPARepository
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.services.BCryptEncoderAdapter
 import jakarta.persistence.EntityManagerFactory
 import jakarta.persistence.Persistence
 import org.koin.dsl.module

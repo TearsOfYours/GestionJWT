@@ -2,7 +2,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.ktor_config
 
 import ies.sequeros.dam.pmdm.gestionperifl.application.services.ITokenService
 import ies.sequeros.dam.pmdm.gestionperifl.di.appModulo
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.services.TokenService
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.services.TokenService
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import org.koin.core.qualifier.named

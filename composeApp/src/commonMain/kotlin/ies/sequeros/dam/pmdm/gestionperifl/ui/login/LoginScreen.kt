@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.LaunchedEffect
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginComponent
-import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginFormViewModel
 
 @Composable
 fun LoginScreen(
@@ -15,7 +15,7 @@ fun LoginScreen(
     onCancel: () -> Unit,
 ) {
     val viewModel = koinViewModel<LoginFormViewModel>()
-    val registerViewModel = koinViewModel<RegisterFormViewModel>()
+    //val registerViewModel = koinViewModel<RegisterForm>()
     //estado del formulario que es el del LoginComponent
     val state by viewModel.state.collectAsState()
     //cuando el estado pasa a ser correcto, se avisa al padre

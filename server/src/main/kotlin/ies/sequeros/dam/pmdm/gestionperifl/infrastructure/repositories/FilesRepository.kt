@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.repositories
 
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IFilesRepository

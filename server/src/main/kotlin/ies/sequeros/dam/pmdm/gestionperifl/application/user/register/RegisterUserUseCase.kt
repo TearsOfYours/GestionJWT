@@ -1,14 +1,10 @@
 package ies.sequeros.dam.pmdm.gestionperifl.application.user.register
 
 import ies.sequeros.dam.pmdm.gestionperifl.application.commons.UserDto
-import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.AlreadyExistsException
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.domain.services.IPasswordEncoder
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.exceptions.DatabaseOperationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.hibernate.exception.ConstraintViolationException
-import org.hibernate.exception.JDBCConnectionException
 import java.util.*
 
 class RegisterUserUseCase(

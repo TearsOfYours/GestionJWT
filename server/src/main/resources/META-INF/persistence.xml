@@ -8,7 +8,7 @@
     <persistence-unit name="gestionJWTUnidadPersistencia" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>ies.sequeros.dam.pmdm.gestionperifl.infraestructure.entities.UserJPA</class>
+        <class>ies.sequeros.dam.pmdm.gestionperifl.infrastructure.entities.UserJPA</class>
 
 
         <properties>

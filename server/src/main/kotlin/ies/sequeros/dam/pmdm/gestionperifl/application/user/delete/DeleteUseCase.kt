@@ -1,18 +1,10 @@
 package ies.sequeros.dam.pmdm.gestionperifl.application.user.delete
 
-import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.BusinessException
 import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.InvalidCredentialsException
-import ies.sequeros.dam.pmdm.gestionperifl.application.exceptions.NotFoundException
-import ies.sequeros.dam.pmdm.gestionperifl.application.services.ITokenService
-import ies.sequeros.dam.pmdm.gestionperifl.application.user.changepassword.ChangePasswordCommand
-import ies.sequeros.dam.pmdm.gestionperifl.application.user.refresh.RefreshDto
-import ies.sequeros.dam.pmdm.gestionperifl.application.user.refresh.RefreshTokenUserCommand
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IFilesRepository
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.domain.repositories.StorageEntity
 import ies.sequeros.dam.pmdm.gestionperifl.domain.services.IPasswordEncoder
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.repositories.FilesRepository
-import io.ktor.server.auth.AuthenticationFailedCause
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID

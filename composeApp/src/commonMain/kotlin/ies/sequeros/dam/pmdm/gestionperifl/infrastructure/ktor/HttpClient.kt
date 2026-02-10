@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor
 import io.ktor.client.HttpClient
 
 import io.ktor.client.plugins.DefaultRequest

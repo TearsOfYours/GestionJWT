@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.entities
+package ies.sequeros.dam.pmdm.gestionperifl.infrastructure.entities
 
 import ies.sequeros.dam.pmdm.gestionperifl.domain.entities.UserStatus
 import jakarta.persistence.*
