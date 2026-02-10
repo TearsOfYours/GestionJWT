@@ -6,6 +6,9 @@ import kotlin.uuid.Uuid
 
 @Serializable()
 data class User @OptIn(ExperimentalUuidApi::class) constructor(
+    val id: Uuid,
     val username: String,
     val email: String,
-    val id: Uuid)
+    val image: String?,
+    val status: UserStatus
+)

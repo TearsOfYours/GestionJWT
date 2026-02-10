@@ -46,11 +46,22 @@ class RegisterFormViewModel: ViewModel(
         validForm()
     }
 
-    fun onRepeatPasswordChange(repeatPassword: String, password: String){
+    fun onRepeatPasswordChange(repeatPassword: String){
         _state.update {
             it.copy(
-                repeatePassword = repeatPassword,
-                repeatePasswordError = if (repeatPassword == password) null else "Deben de coincidir las contraseñas"
+                repeatePassword = repeatPassword
+            )
+        }
+    }
+
+    private fun validatePasswords() {
+        _state.update { state ->
+            state.copy(
+                repeatePasswordError =
+                    if (state.repeatePassword == state.password)
+                        null
+                    else
+                        "Deben coincidir las contraseñas"
             )
         }
     }
