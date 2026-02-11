@@ -3,7 +3,7 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.components.login
 data class LoginState(
     // Campos del formulario
     val email: String = "paco@paco.es",
-    val password: String = "1234567%8Pp",
+    val password: String = "T3st@Pass",
 
     // UI States
     val isLoading: Boolean = false,

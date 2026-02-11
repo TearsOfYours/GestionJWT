@@ -1,6 +1,6 @@
-package ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases
+package ies.sequeros.dam.pmdm.gestionperifl.application.usecases
 
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.commands.RegisterCommand
+import ies.sequeros.dam.pmdm.gestionperifl.application.commands.RegisterCommand
 
 import ies.sequeros.dam.pmdm.gestionperifl.model.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.model.RegisterUser

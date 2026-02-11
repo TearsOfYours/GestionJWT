@@ -1,7 +1,6 @@
-package ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases
+package ies.sequeros.dam.pmdm.gestionperifl.application.usecases
 
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.commands.LoginCommand
-import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
+import ies.sequeros.dam.pmdm.gestionperifl.application.commands.LoginCommand
 import ies.sequeros.dam.pmdm.gestionperifl.model.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.model.LoginUser
 

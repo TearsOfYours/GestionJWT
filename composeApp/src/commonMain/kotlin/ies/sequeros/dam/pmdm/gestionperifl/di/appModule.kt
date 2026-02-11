@@ -1,7 +1,7 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.LoginUseCase
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.LoginUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.RegisterUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.RestUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor.createHttpClient
@@ -20,7 +20,7 @@ val appModulo = module {
      * infraestructura
      */
     single {
-        createHttpClient( //get(),
+        createHttpClient( get(),
             "http://localhost:8080/api/public/refresh"
         )
     }
@@ -48,7 +48,7 @@ val appModulo = module {
     capa de presentación
      **/
     single { AppSettings() }
-    viewModel { AppViewModel(get(), get()) }
+    viewModel { AppViewModel(get(), get(), get()) }
     viewModel { LoginFormViewModel(get()) }
 
     viewModel { RegisterFormViewModel(get()) }

@@ -11,10 +11,10 @@ class RefreshTokenUseCase(
     val tokenService: ITokenService
 
 ) {
-    suspend operator fun invoke(command: RefreshTokenUserCommand): RefreshDto =
+    suspend operator fun invoke(command: RefreshTokenUserCommand): RefreshDto? =
         withContext(Dispatchers.IO) {
             val id=tokenService.validateToken(command.refreshToken)
-            val user=repository.findById(id)?: throw NotFoundException("User","User not found")
+            val user = repository.findById(id) ?: return@withContext null
             val authToken= tokenService.generateAuthTokens(user)
             RefreshDto(authToken.accessToken,authToken.idToken,authToken.expiresIn,
                 "Bearer",authToken.refreshToken)

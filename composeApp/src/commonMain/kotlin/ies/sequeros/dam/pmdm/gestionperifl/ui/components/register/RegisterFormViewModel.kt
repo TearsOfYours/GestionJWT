@@ -2,8 +2,8 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.components.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.commands.RegisterCommand
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.commands.RegisterCommand
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.RegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

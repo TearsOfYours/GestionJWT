@@ -2,7 +2,6 @@ package ies.sequeros.dam.pmdm.gestionperifl.endpoints.publico
 
 import ies.sequeros.dam.pmdm.gestionperifl.application.user.refresh.RefreshTokenUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.application.user.refresh.RefreshTokenUserCommand
-import ies.sequeros.dam.pmdm.gestionperifl.ktor_config.plugins.ValidateSchema
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -22,10 +21,14 @@ fun Route.refreshEndPoint() {
         }*/
         post() {
             val command = call.receive<RefreshTokenUserCommand>()
-            var item = refreshUserUseCase(command)
+            val item = refreshUserUseCase(command)
+            if (item == null) {
+                call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Refresh token invalid or expired"))
+            } else {
+                call.respond(HttpStatusCode.OK, item)
+            }
             //en caso de no haber saltado ninguna excepción, se  devuelve el
             //objeto de refresco
-            call.respond(HttpStatusCode.OK, item)
 
         }
     }

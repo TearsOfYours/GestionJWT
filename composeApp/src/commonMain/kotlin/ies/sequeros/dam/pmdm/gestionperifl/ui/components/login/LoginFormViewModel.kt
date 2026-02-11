@@ -2,8 +2,8 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.components.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.commands.LoginCommand
-import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.LoginUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.commands.LoginCommand
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

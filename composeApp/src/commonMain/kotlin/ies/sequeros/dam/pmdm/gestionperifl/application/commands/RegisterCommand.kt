@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.aplication.commands
+package ies.sequeros.dam.pmdm.gestionperifl.application.commands
 
 data class RegisterCommand(
     val email: String,

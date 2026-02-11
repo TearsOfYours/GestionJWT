@@ -3,8 +3,16 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
+import ies.sequeros.dam.pmdm.gestionperifl.application.dto.RefreshDto
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenJwt
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor.createHttpClient
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.flow.MutableStateFlow
 
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +24,8 @@ import kotlinx.coroutines.launch
 
 class AppViewModel(
     private val settings: AppSettings,
-    private val tokenStorage: TokenStorage
+    private val tokenStorage: TokenStorage,
+    private val client: HttpClient
 ) : ViewModel() {
 
     val isDarkMode = settings.isDarkMode
@@ -37,14 +46,35 @@ class AppViewModel(
             if (!access.isNullOrEmpty()) {
                 val token = TokenJwt(access)
                 if (token.isSessionValid()) {
+                    // Token válido → ir a main
                     _startDestination.value = AppRoute.main
+                } else if (!refresh.isNullOrEmpty()) {
+                    // Token expirado → intentar refrescar
+                    val newTokens = tryRefreshToken(refresh)
+                    if (newTokens != null) {
+                        tokenStorage.saveTokens(newTokens.access_token!!, newTokens.refresh_token!!)
+                        _startDestination.value = AppRoute.main
+                    } else {
+                        // No se pudo refrescar → ir a login
+                        _startDestination.value = AppRoute.login
+                    }
                 } else {
-                    // Opcional: podrías refrescar aquí si hay refresh token
                     _startDestination.value = AppRoute.login
                 }
             } else {
                 _startDestination.value = AppRoute.login
             }
+        }
+    }
+    // Función para llamar al endpoint de refresh
+    private suspend fun tryRefreshToken(refreshToken: String): RefreshDto? {
+        return try {
+            client.post("http://localhost:8080/api/public/refresh") {
+                contentType(ContentType.Application.Json)
+                setBody(mapOf("refresh_token" to refreshToken))
+            }.body<RefreshDto>()
+        } catch (e: Exception) {
+            null
         }
     }
 
