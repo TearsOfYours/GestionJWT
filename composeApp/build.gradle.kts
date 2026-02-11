@@ -61,6 +61,12 @@ kotlin {
             //fecha y hora
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
+            //SLF4 (salta errores de loggers, los cuales no muestran
+
+            //SLF4J(W): No SLF4J providers were found.
+            //SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+            implementation("ch.qos.logback:logback-classic:1.4.11")
+
             //iconos
             implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             //injección de dependencias

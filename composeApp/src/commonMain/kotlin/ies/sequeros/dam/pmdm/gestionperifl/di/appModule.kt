@@ -1,6 +1,11 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
+import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.LoginUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.RestUserRepository
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor.createHttpClient
+import ies.sequeros.dam.pmdm.gestionperifl.model.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterFormViewModel
@@ -20,7 +25,18 @@ val appModulo = module {
         )
     }
     //almacenamiento del token
+    single { TokenStorage(get()) }
+
+
     //repositorios
+    single<IUserRepository> {
+        RestUserRepository(
+            url = "http://localhost:8080/api/public",
+            cliente = get(),
+            tokenStorage = get()
+        )
+    }
+
     /**
     capa de aplicación
     el sesion manager,
@@ -32,8 +48,11 @@ val appModulo = module {
     capa de presentación
      **/
     single { AppSettings() }
-    viewModel { AppViewModel(get()) }
-    viewModel { LoginFormViewModel() }
-    viewModel { RegisterFormViewModel() }
+    viewModel { AppViewModel(get(), get()) }
+    viewModel { LoginFormViewModel(get()) }
+
+    viewModel { RegisterFormViewModel(get()) }
+    factory { RegisterUseCase(get()) }
+    factory { LoginUseCase(get()) }
 
 }

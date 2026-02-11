@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,20 +20,27 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginComponent (state: LoginState,
                     onEmailChange: (String) -> Unit,
                     onPasswordChange: (String) -> Unit,
                     onLoginClick: () -> Unit,
-                    onCancel: () -> Unit) {
+                    onCancel: () -> Unit)
+{
+    val viewModel = koinViewModel<LoginFormViewModel>()
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -83,7 +91,7 @@ fun LoginComponent (state: LoginState,
             if (state.errorMessage != null) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = state.errorMessage!!,
+                    text = state.errorMessage,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -111,7 +119,7 @@ fun LoginComponent (state: LoginState,
                     Button(
                         onClick = {
                             onLoginClick()
-                            //viewModel.login()
+                            viewModel.login()
 
                         },
                         modifier = Modifier.weight(1f),
@@ -120,16 +128,20 @@ fun LoginComponent (state: LoginState,
                     ) {
                         Text("Entrar")
                     }
-                    if (state.errorMessage != null) {
-                        Text(
-                            text = state.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .fillMaxWidth()
-                        )
-                    }
+
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+                if (state.errorMessage != null) {
+                    val shortMsg = state.errorMessage.take(50)
+                    Text(
+                        text = shortMsg,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .fillMaxWidth()
+                    )
                 }
             }
         }

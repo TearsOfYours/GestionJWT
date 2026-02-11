@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RegisterFormViewModel: ViewModel(
-
-) {
+class RegisterFormViewModel(
+    private val registerUseCase: RegisterUseCase
+): ViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState> = _state.asStateFlow()
@@ -22,7 +22,7 @@ class RegisterFormViewModel: ViewModel(
         _state.update {
             it.copy(
                 username = username,
-                usernameError = if (username.isBlank()) null else "Escribe un nombre de usuario")
+                usernameError = if (username.length < 8) "Debe tener entre 8 y 64 caracteres" else null)
         }
         validForm()
     }
@@ -40,9 +40,10 @@ class RegisterFormViewModel: ViewModel(
         _state.update {
             it.copy(
                 password = password,
-                passwordError = if (password.length >= 6) null else "Mínimo 6 caracteres"
+                passwordError = validatePassword(password)
             )
         }
+        validatePasswords()
         validForm()
     }
 
@@ -52,6 +53,8 @@ class RegisterFormViewModel: ViewModel(
                 repeatePassword = repeatPassword
             )
         }
+        validatePasswords()
+        validForm()
     }
 
     private fun validatePasswords() {
@@ -64,6 +67,20 @@ class RegisterFormViewModel: ViewModel(
                         "Deben coincidir las contraseñas"
             )
         }
+    }
+
+
+    //Válida si hay en la contraseña una de esas caracteristicas, y si no cumple con una, suelta un eerror
+    private fun validatePassword(password: String): String? {
+        if (password.length !in 6..32) return "Debe tener entre 6 y 32 caracteres"
+
+        val upper = password.any { it.isUpperCase() }
+        val lower = password.any { it.isLowerCase() }
+        val digit = password.any { it.isDigit() }
+        val special = password.any { !it.isLetterOrDigit() }
+
+        return if (upper && lower && digit && special) null
+        else "Debe incluir mayúscula, minúscula, número y carácter especial"
     }
 
     private fun validForm() {
@@ -87,14 +104,16 @@ class RegisterFormViewModel: ViewModel(
                     RegisterCommand(
                         email = _state.value.email,
                         password = _state.value.password,
-                        username = _state.value.email,
+                        username = _state.value.username,
                     )
-                val result = RegisterUseCase(registerCommand)
+                registerUseCase.register(registerCommand)
+                _state.update { it.copy(isRegisterSuccess = true) }
+
             }catch(e: Exception)  {
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.message ?: "Registrando..."
+                        errorMessage = e.message ?: "Error con el registro..."
                     )
                 }
             }

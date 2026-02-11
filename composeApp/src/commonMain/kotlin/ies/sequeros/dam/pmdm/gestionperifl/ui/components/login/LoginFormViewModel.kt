@@ -2,6 +2,8 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.components.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ies.sequeros.dam.pmdm.gestionperifl.aplication.commands.LoginCommand
+import ies.sequeros.dam.pmdm.gestionperifl.aplication.usecases.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class LoginFormViewModel(
     //inyectar caso de uso
-   // val loginUseCase: LoginUseCase
+    val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -50,28 +52,22 @@ class LoginFormViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                //cargando
                 _state.value = state.value.copy(isLoading = true)
-                //crear el comando, llamar al caso de uso
-                //que devuelve ok, o un error en el result
-                /*
+
                 val loginCommand =
                     LoginCommand(
                         email = state.value.email,
                         password = state.value.password
                     )
 
-                val result=loginUseCase(loginCommand).onSuccess{
-                    //_state.value = _state.value.copy(isLoginSuccess = true)
+                loginUseCase.login(loginCommand).onSuccess{
+                    _state.value = _state.value.copy(isLoginSuccess = true)
                     _state.update { it.copy(isLoading = false, isLoginSuccess = true) }
 
                 }.onFailure {
                     _state.update { it.copy(isLoading = false, isLoginSuccess = false) }
-                    //meter aqui el error
 
-                }*/
-
-
+                }
 
             } catch (e: Exception) {
                 _state.update {

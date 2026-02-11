@@ -2,10 +2,9 @@ package ies.sequeros.dam.pmdm.gestionperifl.model
 
 import kotlinx.serialization.Serializable
 
+
 @Serializable
-enum class UserStatus {
-    PENDING,
-    ACTIVE,
-    INACTIVE,
-    SUSPENDED
-}
+data class LoginUser(
+    val email: String,
+    val password: String
+)

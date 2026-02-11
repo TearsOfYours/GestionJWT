@@ -1,17 +1,30 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.register
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterForm
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterComponent
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterFormViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegisterScreen(
+    navController: NavController,   // añadimos navController
     onRegister: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -25,14 +38,31 @@ fun RegisterScreen(
         }
     }
 
-    RegisterForm(
-        state = state,
-        onUsernameChange = viewModel::onUsernameChange,
-        onPasswordChange = viewModel::onPasswordChange,
-        onRepeatedPasswordChange = viewModel::onRepeatPasswordChange,
-        onEmailChange = viewModel::onEmailChange,
-        onRegister = {  },
-        onCancel = { onCancel() }
-    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        RegisterComponent(
+            state = state,
+            onUsernameChange = viewModel::onUsernameChange,
+            onPasswordChange = viewModel::onPasswordChange,
+            onRepeatedPasswordChange = viewModel::onRepeatPasswordChange,
+            onEmailChange = viewModel::onEmailChange,
+            onRegister = viewModel::register,
+            onCancel = onCancel
+        )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón simple para volver a Login
+        OutlinedButton(
+            onClick = { navController.navigate(AppRoute.login) },
+            modifier = Modifier.height(40.dp)
+        ) {
+            Text("¿Ya tienes cuenta? Inicia sesión", fontSize = 14.sp)
+        }
+    }
 }

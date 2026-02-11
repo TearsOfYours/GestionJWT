@@ -2,6 +2,10 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenJwt
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
+import kotlinx.coroutines.flow.MutableStateFlow
 
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,34 +16,41 @@ import kotlinx.coroutines.launch
 
 class AppViewModel(
     private val settings: AppSettings,
-
+    private val tokenStorage: TokenStorage
 ) : ViewModel() {
+
     val isDarkMode = settings.isDarkMode
-    //se toma el valor de la sesion
 
-
-    fun toggleTheme() = settings.toggleDarkMode()
-    fun setDarkMode() {
-        settings.setDarkMode()
-    }
-    fun setLighMode() {
-        settings.setLightMode()
-    }
-    fun swithMode() {
-        settings.toggleDarkMode()
-    }
+    // Esto es para saber a donde hay que reindicar al usuario
+    private val _startDestination = MutableStateFlow<String?>(null)
+    val startDestination: StateFlow<String?> = _startDestination
 
     init {
-       /* userSessionManager.isLoggedIn.onEach {
-                if (it==true) {
-                    // El usuario acaba de entrar o la sesión se validó
-                    checkSession()
-                }
-            }
-            .launchIn(viewModelScope) // Se cancela automáticamente cuando el ViewModel muere
-       // checkSession()*/
+        checkSession()
     }
 
+    private fun checkSession() {
+        viewModelScope.launch {
+            val access = tokenStorage.getAccessToken()
+            val refresh = tokenStorage.getRefreshToken()
 
+            if (!access.isNullOrEmpty()) {
+                val token = TokenJwt(access)
+                if (token.isSessionValid()) {
+                    _startDestination.value = AppRoute.main
+                } else {
+                    // Opcional: podrías refrescar aquí si hay refresh token
+                    _startDestination.value = AppRoute.login
+                }
+            } else {
+                _startDestination.value = AppRoute.login
+            }
+        }
+    }
 
+    // Opciones de los temas
+    fun toggleTheme() = settings.toggleDarkMode()
+    fun setDarkMode() = settings.setDarkMode()
+    fun setLightMode() = settings.setLightMode()
+    fun switchMode() = settings.toggleDarkMode()
 }

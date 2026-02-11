@@ -3,11 +3,13 @@ package ies.sequeros.dam.pmdm.gestionperifl
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -28,27 +30,20 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.register.RegisterScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-@Preview
 fun App() {
     val appViewModel: AppViewModel = koinViewModel()
     val navController = rememberNavController()
-    NavHost(
-        navController = navController, startDestination = AppRoute.login
-    ) {
-        composable(AppRoute.login) {
-            LoginScreen({},{})
+    val startDestination by appViewModel.startDestination.collectAsState()
+
+    // Si aún no sabemos a dónde ir, mostrar cargando
+    if (startDestination == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
-
-        composable(AppRoute.register) {
-            RegisterScreen()
-        }
-
-        composable(AppRoute.main) {
-            // TODO
-        }
-
-
-
+        return
     }
 
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
@@ -57,9 +52,33 @@ fun App() {
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding()
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            NavHost(
+                navController = navController,
+                startDestination = startDestination!!
+            ) {
+                composable(AppRoute.login) {
+                    LoginScreen(
+                        navController = navController,
+                        onLogin = { navController.navigate(AppRoute.main) },
+                        onCancel = { /* TODO: cerrar app o limpiar */ }
+                    )
+                }
+
+                composable(AppRoute.register) {
+                    RegisterScreen(
+                        navController = navController,
+                        onRegister = { navController.navigate(AppRoute.login) },
+                        onCancel = { navController.popBackStack() }
+                    )
+                }
+
+                composable(AppRoute.main) {
+                    // TODO: pantalla principal
+                }
+            }
         }
     }
 }

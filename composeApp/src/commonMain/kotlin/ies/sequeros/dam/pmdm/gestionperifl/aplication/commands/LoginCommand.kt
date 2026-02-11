@@ -1,4 +1,6 @@
 package ies.sequeros.dam.pmdm.gestionperifl.aplication.commands
 
-class LoginCommand {
-}
+data class LoginCommand(
+    val email: String,
+    val password: String
+)
