@@ -1,4 +1,4 @@
-package ies.sequeros.dam.pmdm.gestionperifl.ui.register
+package ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,60 +9,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
+import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
-import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterComponent
-import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterFormViewModel
-import org.koin.compose.viewmodel.koinViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginComponent
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginFormViewModel
 
 @Composable
-fun RegisterScreen(
-    navController: NavController,   // añadimos navController
-    onRegister: () -> Unit,
+fun LoginScreen(
+    navController: NavController,   // lo recibimos para navegar
+    onLogin: () -> Unit,
     onCancel: () -> Unit,
 ) {
-
-    val viewModel = koinViewModel<RegisterFormViewModel>()
+    val viewModel = koinViewModel<LoginFormViewModel>()
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(state.isRegisterSuccess) {
-        if (state.isRegisterSuccess) {
-            onRegister()
+    LaunchedEffect(state.isLoginSuccess) {
+        if (state.isLoginSuccess) {
+            onLogin()
         }
     }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
-        RegisterComponent(
+        LoginComponent(
             state = state,
-            onUsernameChange = viewModel::onUsernameChange,
-            onPasswordChange = viewModel::onPasswordChange,
-            onRepeatedPasswordChange = viewModel::onRepeatPasswordChange,
             onEmailChange = viewModel::onEmailChange,
-            onRegister = viewModel::register,
+            onPasswordChange = viewModel::onPasswordChange,
+            onLoginClick = { viewModel.login() },
             onCancel = onCancel
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón simple para volver a Login
+        // Botón simple para ir a Register
         OutlinedButton(
-            onClick = { navController.navigate(AppRoute.login) },
+            onClick = { navController.navigate(AppRoute.register) },
             modifier = Modifier.height(40.dp)
         ) {
-            Text("¿Ya tienes cuenta? Inicia sesión", fontSize = 14.sp)
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }
