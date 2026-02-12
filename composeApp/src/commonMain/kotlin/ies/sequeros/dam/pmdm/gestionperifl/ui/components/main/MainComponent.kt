@@ -43,7 +43,7 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.LoginScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ModifyUserScreen
 
 @Composable
-fun MainComponent() {
+fun MainComponent(onLogout: () -> Unit) {
 
     val navController = rememberNavController()
     val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -75,15 +75,16 @@ fun MainComponent() {
             }
 
             composable(MainRoutes.Perfil) { Text("Perfil Usuario") }
-            composable(MainRoutes.CambiarPassword) { ChangePasswordScreen() }
+            composable(MainRoutes.CambiarPassword) {
+                ChangePasswordScreen(onGoToLogin = {
+                onLogout()
+            })
+            }
             composable(MainRoutes.CambiarImagen) { Text("Cambiar Imagen") }
             composable(MainRoutes.ModificarUsuario) { ModifyUserScreen() }
             composable(MainRoutes.BorrarUsuario) {
                 DeleteUserScreen(onGoToLogin = {
-                    navController.navigate(AppRoute.login) {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                        launchSingleTop = true
-                    }
+                    onLogout()
                 })
             }
         }

@@ -9,14 +9,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ies.sequeros.dam.pmdm.gestionperifl.ui.components.changepasswd.ChangePasswordViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.changepasswd.ChangePasswordViewModel
 
 @Composable
-fun ChangePasswordScreen(viewModel: ChangePasswordViewModel = koinViewModel()) {
+fun ChangePasswordScreen(viewModel: ChangePasswordViewModel = koinViewModel(), onGoToLogin: () -> Unit) {
+    LaunchedEffect(viewModel.changeSuccess) {
+        if (viewModel.changeSuccess) {
+            onGoToLogin()
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

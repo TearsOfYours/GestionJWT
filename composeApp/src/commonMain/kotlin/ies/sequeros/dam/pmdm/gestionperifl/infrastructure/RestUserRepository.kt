@@ -30,6 +30,7 @@ data class LoginDetailError(
 
 class RestUserRepository(
     private val url: String,
+    private val privateUrl: String,
     private val cliente: HttpClient,
     private val tokenStorage: TokenStorage
 ): IUserRepository {
@@ -37,7 +38,7 @@ class RestUserRepository(
     override suspend fun loginUser(user: LoginUser): Map<String, String> {
         return try {
             // Intentamos deserializar la respuesta correctamente
-            val tokens = cliente.post("$url/public/login") {
+            val tokens = cliente.post("$url/login") {
                 contentType(ContentType.Application.Json)
                 setBody(user)
             }.body<Map<String, String>>() // Respuesta esperada de tokens
@@ -68,7 +69,7 @@ class RestUserRepository(
     }
 
     override suspend fun registerUser(user: RegisterUser) {
-        cliente.post("$url/public/register") {
+        cliente.post("$url/register") {
             contentType(ContentType.Application.Json)
             setBody(user)
         }.body<Unit>()
@@ -81,7 +82,7 @@ class RestUserRepository(
     override suspend fun changePassword(oldPassword: String, newPassword: String) {
         val token = tokenStorage.getAccessToken()
         try {
-            cliente.put("$url/users/me/password") {
+            cliente.put("$privateUrl/password") {
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $token")
                 setBody(ChangePasswordUser(oldPassword, newPassword))
@@ -97,7 +98,7 @@ class RestUserRepository(
     override suspend fun modifyUser(name: String, status: String) {
         val token = tokenStorage.getAccessToken()
         try {
-            cliente.patch("$url/users/me") {
+            cliente.patch("$privateUrl") {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -118,7 +119,7 @@ class RestUserRepository(
     override suspend fun deleteUser(password: String) {
         val token = tokenStorage.getAccessToken()
         try {
-            cliente.delete("$url/users/me") {
+            cliente.delete("$privateUrl") {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.Application.Json)
                 setBody(

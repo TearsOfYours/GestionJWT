@@ -67,7 +67,15 @@ fun App() {
                 }
 
                 composable(AppRoute.main) {
-                    MainScreen()
+                    MainScreen(
+                        onLogout = {
+                            appViewModel.logout()
+
+                            navController.navigate(AppRoute.login) {
+                                popUpTo(0)
+                            }
+                        }
+                    )
                 }
             }
         }

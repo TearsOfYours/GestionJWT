@@ -33,11 +33,11 @@ val appModulo = module {
     //almacenamiento del token
     single { TokenStorage(get()) }
 
-
     //repositorios
     single<IUserRepository> {
         RestUserRepository(
-            url = "http://localhost:8080/api",
+            url = "http://localhost:8080/api/public",
+            privateUrl = "http://localhost:8080/api/users/me",
             cliente = get(),
             tokenStorage = get()
         )
@@ -55,7 +55,7 @@ val appModulo = module {
      **/
     single { AppSettings() }
     viewModel { AppViewModel(get(), get(), get()) }
-    viewModel { LoginFormViewModel(get()) }
+    viewModel { LoginFormViewModel(get())}
     viewModel { ChangePasswordViewModel(get()) }
     viewModel { ModifyUserViewModel(get()) }
     viewModel { DeleteUserViewModel(get()) }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ies.sequeros.dam.pmdm.gestionperifl.application.commands.LoginCommand
 import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.LoginUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,6 +53,7 @@ class LoginFormViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
             try {
+
                 _state.value = state.value.copy(isLoading = true)
 
                 val loginCommand =
