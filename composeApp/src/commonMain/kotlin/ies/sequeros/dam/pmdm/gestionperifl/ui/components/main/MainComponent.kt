@@ -36,6 +36,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ChangePasswordScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.DeleteUserScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.LoginScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ModifyUserScreen
 
 @Composable
 fun MainComponent() {
@@ -46,7 +51,7 @@ fun MainComponent() {
     val items = listOf(
         Pair(Icons.Default.Person, MainRoutes.Perfil),
         Pair(Icons.Default.Lock, MainRoutes.CambiarPassword),
-        Pair(Icons.Default.Photo,  MainRoutes.CambiarImagen),
+        Pair(Icons.Default.Photo, MainRoutes.CambiarImagen),
         Pair(Icons.Default.Edit, MainRoutes.ModificarUsuario),
         Pair(Icons.Default.Delete, MainRoutes.BorrarUsuario)
     )
@@ -55,18 +60,37 @@ fun MainComponent() {
         NavHost(
             navController = navController,
             startDestination = MainRoutes.Perfil
+
         ) {
+            composable(AppRoute.login) {
+                LoginScreen(
+                    navController = navController,
+                    onLogin = {
+                        navController.navigate(AppRoute.login) {
+                            popUpTo(0)
+                        }
+                    },
+                    onCancel = { }
+                )
+            }
+
             composable(MainRoutes.Perfil) { Text("Perfil Usuario") }
-            composable(MainRoutes.CambiarPassword) { Text("Cambiar Contraseña") }
+            composable(MainRoutes.CambiarPassword) { ChangePasswordScreen() }
             composable(MainRoutes.CambiarImagen) { Text("Cambiar Imagen") }
-            composable(MainRoutes.ModificarUsuario) { Text("Modificar Usuario") }
-            composable(MainRoutes.BorrarUsuario) { Text("Borrar Usuario") }
+            composable(MainRoutes.ModificarUsuario) { ModifyUserScreen() }
+            composable(MainRoutes.BorrarUsuario) {
+                DeleteUserScreen(onGoToLogin = {
+                    navController.navigate(AppRoute.login) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
+            }
         }
     }
 
-    // PARTE DE MÓVIL
+    // Parte móvil
     if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
-
         Scaffold(
             bottomBar = {
                 NavigationBar {
@@ -74,30 +98,19 @@ fun MainComponent() {
                         NavigationBarItem(
                             selected = false,
                             onClick = { navController.navigate(item.second) },
-                            icon = {
-                                Icon(
-                                    imageVector = item.first,
-                                    contentDescription = item.second
-                                )
-                            }
+                            icon = { Icon(item.first, contentDescription = item.second) }
                         )
                     }
                 }
             }
         ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
-                navegador()
-            }
+            Box(Modifier.padding(innerPadding)) { navegador() }
         }
-
     } else {
-
-        // PARTE DE ESCRITORIO
+        // Parte escritorio
         PermanentNavigationDrawer(
             drawerContent = {
-                PermanentDrawerSheet(
-                    Modifier.width(128.dp)
-                ) {
+                PermanentDrawerSheet(Modifier.width(128.dp)) {
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -105,9 +118,7 @@ fun MainComponent() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
                         Spacer(Modifier.height(16.dp))
-
                         items.forEach { item ->
                             NavigationDrawerItem(
                                 icon = {
@@ -122,7 +133,7 @@ fun MainComponent() {
                                         )
                                     }
                                 },
-                                label = { },
+                                label = {},
                                 selected = false,
                                 onClick = { navController.navigate(item.second) },
                                 modifier = Modifier.padding(vertical = 4.dp)
@@ -139,9 +150,7 @@ fun MainComponent() {
                         .height(600.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
-                ) {
-                    navegador()
-                }
+                ) { navegador() }
             }
         )
     }

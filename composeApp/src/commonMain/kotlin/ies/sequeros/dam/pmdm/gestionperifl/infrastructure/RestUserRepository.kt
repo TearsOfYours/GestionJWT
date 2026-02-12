@@ -1,7 +1,10 @@
 package ies.sequeros.dam.pmdm.gestionperifl.infrastructure
 
+import ies.sequeros.dam.pmdm.gestionperifl.model.ChangePasswordUser
+import ies.sequeros.dam.pmdm.gestionperifl.model.DeleteUser
 import ies.sequeros.dam.pmdm.gestionperifl.model.IUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.model.LoginUser
+import ies.sequeros.dam.pmdm.gestionperifl.model.ModifyUser
 import ies.sequeros.dam.pmdm.gestionperifl.model.RegisterUser
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -34,7 +37,7 @@ class RestUserRepository(
     override suspend fun loginUser(user: LoginUser): Map<String, String> {
         return try {
             // Intentamos deserializar la respuesta correctamente
-            val tokens = cliente.post("$url/login") {
+            val tokens = cliente.post("$url/public/login") {
                 contentType(ContentType.Application.Json)
                 setBody(user)
             }.body<Map<String, String>>() // Respuesta esperada de tokens
@@ -65,15 +68,70 @@ class RestUserRepository(
     }
 
     override suspend fun registerUser(user: RegisterUser) {
-        cliente.post("$url/register") {
+        cliente.post("$url/public/register") {
             contentType(ContentType.Application.Json)
             setBody(user)
         }.body<Unit>()
     }
 
-
     override suspend fun logoutUser() {
         tokenStorage.clear()
+    }
+
+    override suspend fun changePassword(oldPassword: String, newPassword: String) {
+        val token = tokenStorage.getAccessToken()
+        try {
+            cliente.put("$url/users/me/password") {
+                contentType(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(ChangePasswordUser(oldPassword, newPassword))
+            }.body<Unit>()
+        } catch (e: ClientRequestException) {
+            throw IllegalArgumentException(e.response.bodyAsText())
+        } catch (e: ServerResponseException) {
+            throw IllegalStateException("Error en el servidor: ${e.response.status}")
+        }
+    }
+
+
+    override suspend fun modifyUser(name: String, status: String) {
+        val token = tokenStorage.getAccessToken()
+        try {
+            cliente.patch("$url/users/me") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    ModifyUser(
+                        name = name,
+                        status = status
+                    )
+                )
+            }.body<Unit>()
+        } catch (e: ClientRequestException) {
+            throw IllegalArgumentException(e.response.bodyAsText())
+        } catch (e: ServerResponseException) {
+            throw IllegalStateException("Error en el servidor: ${e.response.status}")
+
+            }
+    }
+
+    override suspend fun deleteUser(password: String) {
+        val token = tokenStorage.getAccessToken()
+        try {
+            cliente.delete("$url/users/me") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    DeleteUser(password)
+                )
+            }
+            tokenStorage.clear()
+        } catch (e: ClientRequestException) {
+            throw IllegalArgumentException(e.response.bodyAsText())
+        } catch (e: ServerResponseException) {
+            throw IllegalStateException("Error en el servidor: ${e.response.status}")
+        }
+
     }
 
 

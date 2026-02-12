@@ -1,5 +1,8 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
@@ -33,13 +36,15 @@ class AppViewModel(
     // Esto es para saber a donde hay que reindicar al usuario
     private val _startDestination = MutableStateFlow<String?>(null)
     val startDestination: StateFlow<String?> = _startDestination
-
+    var isLoggedIn by mutableStateOf(false)
+        private set
     init {
         checkSession()
     }
 
     private fun checkSession() {
         viewModelScope.launch {
+            isLoggedIn = true
             val access = tokenStorage.getAccessToken()
             val refresh = tokenStorage.getRefreshToken()
 
@@ -50,6 +55,7 @@ class AppViewModel(
                     _startDestination.value = AppRoute.main
                 } else if (!refresh.isNullOrEmpty()) {
                     // Token expirado → intentar refrescar
+                    isLoggedIn = false
                     val newTokens = tryRefreshToken(refresh)
                     if (newTokens != null) {
                         tokenStorage.saveTokens(newTokens.access_token!!, newTokens.refresh_token!!)
@@ -77,7 +83,10 @@ class AppViewModel(
             null
         }
     }
-
+    fun logout() {
+        tokenStorage.clear()
+        isLoggedIn = false
+    }
     // Opciones de los temas
     fun toggleTheme() = settings.toggleDarkMode()
     fun setDarkMode() = settings.setDarkMode()
