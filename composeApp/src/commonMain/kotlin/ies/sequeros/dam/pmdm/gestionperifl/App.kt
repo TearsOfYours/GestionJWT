@@ -22,11 +22,12 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
+
     val appViewModel: AppViewModel = koinViewModel()
     val navController = rememberNavController()
     val startDestination by appViewModel.startDestination.collectAsState()
 
-    // Si aún no sabemos a dónde ir, mostrar cargando
+    // Mientras se decide sesión
     if (startDestination == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -35,6 +36,12 @@ fun App() {
             CircularProgressIndicator()
         }
         return
+    }
+    // Cuando se cambia el startDestination, se cambia el navhost automáticamente
+    LaunchedEffect(startDestination) {
+        navController.navigate(startDestination!!) {
+            popUpTo(0)
+        }
     }
 
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
@@ -50,24 +57,35 @@ fun App() {
                 navController = navController,
                 startDestination = startDestination!!
             ) {
+
                 composable(AppRoute.login) {
                     LoginScreen(
                         navController = navController,
-                        onLogin = { navController.navigate(AppRoute.main) },
-                        onCancel = { /* TODO: cerrar app o limpiar */ }
+                        onLogin = {
+                            appViewModel.onLoginSuccess()
+                        },
+                        onCancel = { }
                     )
                 }
 
                 composable(AppRoute.register) {
                     RegisterScreen(
                         navController = navController,
-                        onRegister = { navController.navigate(AppRoute.login) },
-                        onCancel = { navController.popBackStack() }
+                        onRegister = {
+                            navController.popBackStack()
+                        },
+                        onCancel = {
+                            navController.popBackStack()
+                        }
                     )
                 }
 
                 composable(AppRoute.main) {
-                    MainScreen()
+                    MainScreen(
+                        onLogout = {
+                            appViewModel.logout()
+                        }
+                    )
                 }
             }
         }

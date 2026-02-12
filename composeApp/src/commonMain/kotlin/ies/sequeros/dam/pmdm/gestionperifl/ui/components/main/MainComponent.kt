@@ -11,11 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -25,10 +31,13 @@ import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,17 +47,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
 
 @Composable
-fun MainComponent() {
+fun MainComponent(
+    onLogout: () -> Unit
+) {
 
     val navController = rememberNavController()
     val adaptiveInfo = currentWindowAdaptiveInfo()
 
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
     val items = listOf(
         Pair(Icons.Default.Person, MainRoutes.Perfil),
         Pair(Icons.Default.Lock, MainRoutes.CambiarPassword),
-        Pair(Icons.Default.Photo,  MainRoutes.CambiarImagen),
+        Pair(Icons.Default.Photo, MainRoutes.CambiarImagen),
         Pair(Icons.Default.Edit, MainRoutes.ModificarUsuario),
-        Pair(Icons.Default.Delete, MainRoutes.BorrarUsuario)
+        Pair(Icons.Default.Delete, MainRoutes.BorrarUsuario),
     )
 
     val navegador: @Composable () -> Unit = {
@@ -64,12 +77,13 @@ fun MainComponent() {
         }
     }
 
-    // PARTE DE MÓVIL
+    // Móvil
     if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
 
         Scaffold(
             bottomBar = {
                 NavigationBar {
+
                     items.forEach { item ->
                         NavigationBarItem(
                             selected = false,
@@ -82,6 +96,19 @@ fun MainComponent() {
                             }
                         )
                     }
+
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = { showLogoutDialog = true },
+                        icon = {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = "Cerrar sesión",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        modifier=Modifier.height(32.dp).align(Alignment.CenterVertically)
+                    )
                 }
             }
         ) { innerPadding ->
@@ -92,7 +119,7 @@ fun MainComponent() {
 
     } else {
 
-        // PARTE DE ESCRITORIO
+        // Escritorio
         PermanentNavigationDrawer(
             drawerContent = {
                 PermanentDrawerSheet(
@@ -102,7 +129,6 @@ fun MainComponent() {
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(vertical = 16.dp),
-                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
@@ -128,6 +154,22 @@ fun MainComponent() {
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        NavigationDrawerItem(
+                            icon = {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ExitToApp,
+                                    contentDescription = "Cerrar sesión",
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            },
+                            label = { },
+                            selected = false,
+                            onClick = { showLogoutDialog = true },
+                            modifier=Modifier.height(32.dp).align(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             },
@@ -135,12 +177,39 @@ fun MainComponent() {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
-                        .height(600.dp),
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     navegador()
+                }
+            }
+        )
+    }
+
+    // ===============================
+    // 🔐 DIALOG CONFIRMACIÓN
+    // ===============================
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Cerrar sesión") },
+            text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showLogoutDialog = false
+                        onLogout()
+                    }
+                ) {
+                    Text("Sí")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Cancelar")
                 }
             }
         )

@@ -78,6 +78,17 @@ class AppViewModel(
         }
     }
 
+    fun onLoginSuccess() {
+        _startDestination.value = AppRoute.main
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            tokenStorage.clear()
+            _startDestination.value = AppRoute.login
+        }
+    }
+
     // Opciones de los temas
     fun toggleTheme() = settings.toggleDarkMode()
     fun setDarkMode() = settings.setDarkMode()

@@ -89,12 +89,15 @@ fun LoginComponent (state: LoginState,
             )
             // Error General
             if (state.errorMessage != null) {
-                Spacer(modifier = Modifier.height(16.dp))
+                print("Error: ${state.errorMessage}")
+                /*Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = state.errorMessage,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
+
+                 */
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -132,9 +135,8 @@ fun LoginComponent (state: LoginState,
                     Spacer(modifier = Modifier.width(24.dp))
                 }
                 if (state.errorMessage != null) {
-                    val shortMsg = state.errorMessage.take(50)
                     Text(
-                        text = shortMsg,
+                        text = "Introduzca bien los datos, o cree un nuevo usuario.",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         overflow = TextOverflow.Ellipsis,
