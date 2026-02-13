@@ -1,5 +1,7 @@
 package ies.sequeros.dam.pmdm.gestionperifl.model
 
+import ies.sequeros.dam.pmdm.gestionperifl.application.dto.UserProfileDto
+
 interface IUserRepository {
     suspend fun loginUser(user: LoginUser): Map<String, String>
     suspend fun registerUser(user: RegisterUser)
@@ -7,4 +9,8 @@ interface IUserRepository {
     suspend fun changePassword(oldPassword: String, newPassword: String)
     suspend fun modifyUser(name: String, status: String)
     suspend fun deleteUser(password: String)
+    suspend fun getProfile(): UserProfileDto
+    suspend fun updateProfileImage(fileBytes: ByteArray, filename: String): UserProfileDto
+
+    suspend fun refreshTokens(): String
 }

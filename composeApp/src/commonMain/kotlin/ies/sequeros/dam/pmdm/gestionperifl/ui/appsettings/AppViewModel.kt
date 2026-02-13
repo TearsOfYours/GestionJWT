@@ -81,8 +81,15 @@ class AppViewModel(
             }.body<RefreshDto>()
         } catch (e: Exception) {
             null
+        }finally {
         }
     }
+
+    fun onLoginSuccess() {
+        println("Access token guardado: ${tokenStorage.getAccessToken()}")
+        _startDestination.value = AppRoute.main
+    }
+
     fun logout() {
         viewModelScope.launch {
             tokenStorage.clear()

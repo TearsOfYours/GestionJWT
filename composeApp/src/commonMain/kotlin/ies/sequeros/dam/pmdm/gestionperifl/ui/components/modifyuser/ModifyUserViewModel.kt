@@ -19,30 +19,6 @@ class ModifyUserViewModel(
     var message by mutableStateOf("")
     var isLoading by mutableStateOf(false)
 
-//    init {
-//        loadProfile()
-//    }
-init {
-    loadFakeProfile()
-}
-//    private fun loadProfile() {
-//        viewModelScope.launch {
-//            try {
-//                isLoading = true
-//                val user = getProfileUseCase()
-//                name = user.name
-//                status = user.status
-//            } catch (e: Exception) {
-//                message = "Error cargando perfil"
-//            } finally {
-//                isLoading = false
-//            }
-//        }
-//    }
-private fun loadFakeProfile() {
-    name = "Gabrielo"
-    status = "pending"
-}
     fun modifyUser() {
         viewModelScope.launch {
             try {

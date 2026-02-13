@@ -36,6 +36,12 @@ fun App() {
         }
         return
     }
+    // Cuando se cambia el startDestination, se cambia el navhost automáticamente
+    LaunchedEffect(startDestination) {
+        navController.navigate(startDestination!!) {
+            popUpTo(0)
+        }
+    }
 
     AppTheme(appViewModel.isDarkMode.collectAsState()) {
         Column(
@@ -50,19 +56,26 @@ fun App() {
                 navController = navController,
                 startDestination = startDestination!!
             ) {
+
                 composable(AppRoute.login) {
                     LoginScreen(
                         navController = navController,
-                        onLogin = { navController.navigate(AppRoute.main) },
-                        onCancel = { /* TODO: cerrar app o limpiar */ }
+                        onLogin = {
+                            appViewModel.onLoginSuccess()
+                        },
+                        onCancel = { }
                     )
                 }
 
                 composable(AppRoute.register) {
                     RegisterScreen(
                         navController = navController,
-                        onRegister = { navController.navigate(AppRoute.login) },
-                        onCancel = { navController.popBackStack() }
+                        onRegister = {
+                            navController.popBackStack()
+                        },
+                        onCancel = {
+                            navController.popBackStack()
+                        }
                     )
                 }
 
@@ -70,10 +83,6 @@ fun App() {
                     MainScreen(
                         onLogout = {
                             appViewModel.logout()
-
-                            navController.navigate(AppRoute.login) {
-                                popUpTo(0)
-                            }
                         }
                     )
                 }

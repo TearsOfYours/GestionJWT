@@ -1,59 +1,51 @@
 package ies.sequeros.dam.pmdm.gestionperifl.ui.components.main
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import coil3.compose.AsyncImage
+import ies.sequeros.dam.pmdm.gestionperifl.application.dto.UserProfileDto
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.ImagePickerPreviewComponent
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ModifyUserScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.UserProfileScreen
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.viewmodels.UserProfileImageViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.viewmodels.UserProfileViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.AppRoute
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ChangePasswordScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.DeleteUserScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.LoginScreen
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.ModifyUserScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainComponent(onLogout: () -> Unit) {
+fun MainComponent(
+    onLogout: () -> Unit,
+    userProfile: UserProfileDto? // Recibimos el perfil del usuario
+) {
 
     val navController = rememberNavController()
     val adaptiveInfo = currentWindowAdaptiveInfo()
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     val items = listOf(
-        Pair(Icons.Default.Person, MainRoutes.Perfil),
         Pair(Icons.Default.Lock, MainRoutes.CambiarPassword),
         Pair(Icons.Default.Photo, MainRoutes.CambiarImagen),
         Pair(Icons.Default.Edit, MainRoutes.ModificarUsuario),
-        Pair(Icons.Default.Delete, MainRoutes.BorrarUsuario)
+        Pair(Icons.Default.Delete, MainRoutes.BorrarUsuario),
     )
 
     val navegador: @Composable () -> Unit = {
@@ -62,25 +54,24 @@ fun MainComponent(onLogout: () -> Unit) {
             startDestination = MainRoutes.Perfil
 
         ) {
-            composable(AppRoute.login) {
-                LoginScreen(
-                    navController = navController,
-                    onLogin = {
-                        navController.navigate(AppRoute.login) {
-                            popUpTo(0)
-                        }
-                    },
-                    onCancel = { }
-                )
-            }
-
-            composable(MainRoutes.Perfil) { Text("Perfil Usuario") }
+            composable(MainRoutes.Perfil) { UserProfileScreen() }
             composable(MainRoutes.CambiarPassword) {
                 ChangePasswordScreen(onGoToLogin = {
-                onLogout()
-            })
+                    onLogout()
+                })
             }
-            composable(MainRoutes.CambiarImagen) { Text("Cambiar Imagen") }
+            composable(MainRoutes.CambiarImagen) {
+                val viewModel: UserProfileImageViewModel = koinViewModel()
+                ImagePickerPreviewComponent(
+                    imageUrl = viewModel.profile?.image,
+                    selectedFile = viewModel.selectedFile,
+                    onFileSelected = { viewModel.onFileSelected(it) },
+                    onConfirm = { viewModel.confirmImage() }
+                )
+                viewModel.errorMessage?.let { error ->
+                    Text(error)
+                }
+            }
             composable(MainRoutes.ModificarUsuario) { ModifyUserScreen() }
             composable(MainRoutes.BorrarUsuario) {
                 DeleteUserScreen(onGoToLogin = {
@@ -90,9 +81,30 @@ fun MainComponent(onLogout: () -> Unit) {
         }
     }
 
-    // Parte móvil
+    // PARTE DE MÓVIL
     if (adaptiveInfo.windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
+
         Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    actions = {
+                        IconButton(onClick = { navController.navigate(MainRoutes.Perfil) }) {
+                            if (userProfile?.image.isNullOrEmpty()) {
+                                Icon(Icons.Default.Person, contentDescription = "Perfil")
+                            } else {
+                                AsyncImage(
+                                    model = userProfile?.image,
+                                    contentDescription = "Perfil",
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                )
+                            }
+                        }
+                    }
+                )
+            },
             bottomBar = {
                 NavigationBar {
                     items.forEach { item ->
@@ -102,13 +114,19 @@ fun MainComponent(onLogout: () -> Unit) {
                             icon = { Icon(item.first, contentDescription = item.second) }
                         )
                     }
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = { showLogoutDialog = true },
+                        icon = { Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesión", tint = MaterialTheme.colorScheme.error) }
+                    )
                 }
             }
         ) { innerPadding ->
             Box(Modifier.padding(innerPadding)) { navegador() }
         }
     } else {
-        // Parte escritorio
+
+        // PARTE DE ESCRITORIO
         PermanentNavigationDrawer(
             drawerContent = {
                 PermanentDrawerSheet(Modifier.width(128.dp)) {
@@ -116,30 +134,51 @@ fun MainComponent(onLogout: () -> Unit) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(vertical = 16.dp),
-                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+
+                        // ---------------- AVATAR ----------------
+                        IconButton(
+                            onClick = { navController.navigate(MainRoutes.Perfil) },
+                            modifier = Modifier.size(64.dp)
+                        ) {
+                            if (userProfile?.image.isNullOrEmpty()) {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = "Perfil",
+                                    modifier = Modifier.size(48.dp)
+                                )
+                            } else {
+                                AsyncImage(
+                                    model = userProfile.image,
+                                    contentDescription = "Perfil",
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape)
+                                )
+                            }
+                        }
+
                         Spacer(Modifier.height(16.dp))
+
                         items.forEach { item ->
                             NavigationDrawerItem(
-                                icon = {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            item.first,
-                                            contentDescription = item.second,
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
-                                },
+                                icon = { Icon(item.first, contentDescription = item.second) },
                                 label = {},
                                 selected = false,
                                 onClick = { navController.navigate(item.second) },
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
                         }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        NavigationDrawerItem(
+                            icon = { Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesión", tint = MaterialTheme.colorScheme.error) },
+                            label = {},
+                            selected = false,
+                            onClick = { showLogoutDialog = true }
+                        )
                     }
                 }
             },
@@ -147,11 +186,28 @@ fun MainComponent(onLogout: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
-                        .height(600.dp),
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) { navegador() }
+            }
+        )
+    }
+
+    // ---------------- DIALOG CONFIRMACIÓN ----------------
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Cerrar sesión") },
+            text = { Text("¿Estás seguro de que quieres cerrar sesión?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLogoutDialog = false
+                    onLogout()
+                }) { Text("Sí") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) { Text("Cancelar") }
             }
         )
     }

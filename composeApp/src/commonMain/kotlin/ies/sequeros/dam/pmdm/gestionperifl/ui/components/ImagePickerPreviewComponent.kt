@@ -64,7 +64,7 @@ fun ImagePickerPreviewComponent(
                 )
             } else {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Sin imagen", style = MaterialTheme.typography.labelLarge)
+                    Text("Selecciona una imagen", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
