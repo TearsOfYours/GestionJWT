@@ -68,6 +68,8 @@ class AppViewModel(
     }
     // Función para llamar al endpoint de refresh
     private suspend fun tryRefreshToken(refreshToken: String): RefreshDto? {
+        println("Access token guardado: ${tokenStorage.getAccessToken()}")
+        println("Refresh token guardado: ${tokenStorage.getRefreshToken()}")
         return try {
             client.post("http://localhost:8080/api/public/refresh") {
                 contentType(ContentType.Application.Json)
@@ -75,10 +77,14 @@ class AppViewModel(
             }.body<RefreshDto>()
         } catch (e: Exception) {
             null
+        }finally {
+            println("Access token guardado: ${tokenStorage.getAccessToken()}")
+            println("Refresh token guardado: ${tokenStorage.getRefreshToken()}")
         }
     }
 
     fun onLoginSuccess() {
+        println("Access token guardado: ${tokenStorage.getAccessToken()}")
         _startDestination.value = AppRoute.main
     }
 

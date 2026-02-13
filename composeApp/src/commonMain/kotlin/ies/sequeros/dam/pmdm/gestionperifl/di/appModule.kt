@@ -1,7 +1,9 @@
 package ies.sequeros.dam.pmdm.gestionperifl.di
 
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.GetProfileUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.LoginUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.RegisterUseCase
+import ies.sequeros.dam.pmdm.gestionperifl.application.usecases.UpdateProfileImageUseCase
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.RestUserRepository
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.TokenStorage
 import ies.sequeros.dam.pmdm.gestionperifl.infrastructure.ktor.createHttpClient
@@ -10,6 +12,8 @@ import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppSettings
 import ies.sequeros.dam.pmdm.gestionperifl.ui.appsettings.AppViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.register.RegisterFormViewModel
 import ies.sequeros.dam.pmdm.gestionperifl.ui.components.login.LoginFormViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.viewmodels.UserProfileImageViewModel
+import ies.sequeros.dam.pmdm.gestionperifl.ui.components.screens.viewmodels.UserProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -31,7 +35,7 @@ val appModulo = module {
     //repositorios
     single<IUserRepository> {
         RestUserRepository(
-            url = "http://localhost:8080/api/public",
+            url = "http://localhost:8080/api",
             cliente = get(),
             tokenStorage = get()
         )
@@ -47,12 +51,18 @@ val appModulo = module {
     /**
     capa de presentación
      **/
+
     single { AppSettings() }
+
     viewModel { AppViewModel(get(), get(), get()) }
     viewModel { LoginFormViewModel(get()) }
-
+    viewModel { UserProfileViewModel(get()) }
+    viewModel { UserProfileImageViewModel(get()) }
     viewModel { RegisterFormViewModel(get()) }
+
+    factory { UpdateProfileImageUseCase(get()) }
     factory { RegisterUseCase(get()) }
     factory { LoginUseCase(get()) }
+    factory { GetProfileUseCase(get()) }
 
 }

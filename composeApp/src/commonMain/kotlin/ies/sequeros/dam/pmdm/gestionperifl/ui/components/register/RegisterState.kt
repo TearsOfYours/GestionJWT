@@ -3,8 +3,8 @@ package ies.sequeros.dam.pmdm.gestionperifl.ui.components.register
 data class RegisterState(
     val username: String = "",
     val email: String = "paco@paco.es",
-    val password: String = "1234567%8Pp",
-    val repeatePassword: String = "1234567%8Pp",
+    val password: String = "T3st@Pass",
+    val repeatePassword: String = "T3st@Pass",
 
     // UI States
     val isLoading: Boolean = false,

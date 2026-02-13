@@ -75,27 +75,19 @@ fun createHttpClient(tokenStorage: TokenStorage, refreshUrl: String): HttpClient
                 // Refrescar tokens automáticamente ante 401
                 refreshTokens {
                     val refreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
+                    val response = client.post(refreshUrl) {
+                        markAsRefreshTokenRequest()
+                        setBody(mapOf("refresh_token" to refreshToken))
+                    }
+                    if (response.status == HttpStatusCode.OK) {
+                        val data = response.body<Map<String, String>>()
+                        val newAccess = data["access_token"] ?: ""
+                        val newRefresh = data["refresh_token"] ?: refreshToken
+                        tokenStorage.saveTokens(newAccess, newRefresh)
 
-                    try {
-                        val response = client.post(refreshUrl) {
-                            markAsRefreshTokenRequest()
-                            contentType(ContentType.Application.Json)
-                            setBody(mapOf("refresh_token" to refreshToken))
-                        }
-
-                        if (response.status == HttpStatusCode.OK) {
-                            val data = response.body<Map<String, String>>()
-                            val newAccess = data["access_token"] ?: ""
-                            val newRefresh = data["refresh_token"] ?: refreshToken
-
-                            tokenStorage.saveTokens(newAccess, newRefresh)
-
-                            BearerTokens(newAccess, newRefresh)
-                        } else {
-                            tokenStorage.clear()
-                            null
-                        }
-                    } catch (e: Exception) {
+                        // Devuelve el nuevo token para próximas peticiones
+                        BearerTokens(newAccess, newRefresh)
+                    } else {
                         tokenStorage.clear()
                         null
                     }
